@@ -1,15 +1,16 @@
 'use strict';
 const nodeDocUrl = '';
 const jsDocPrefix = 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/';
-const jsDocUrl = jsDocPrefix + 'Reference/Global_Objects/';
-const jsPrimitiveUrl = jsDocPrefix + 'Data_structures';
+const jsDocUrl = `${jsDocPrefix}Reference/Global_Objects/`;
+const jsPrimitiveUrl = `${jsDocPrefix}Data_structures`;
 const jsPrimitives = {
-  'Integer': 'Number',  // this is for extending
-  'Number': 'Number',
-  'String': 'String',
-  'Boolean': 'Boolean',
-  'Null': 'Null',
-  'Symbol': 'Symbol'
+  'boolean': 'Boolean',
+  'integer': 'Number', // not a primitive, used for clarification
+  'null': 'Null',
+  'number': 'Number',
+  'string': 'String',
+  'symbol': 'Symbol',
+  'undefined': 'Undefined'
 };
 const jsGlobalTypes = [
   'Error', 'Object', 'Function', 'Array', 'TypedArray', 'Uint8Array',
@@ -21,10 +22,10 @@ const jsGlobalTypes = [
   'AsyncFunction', 'SharedArrayBuffer'
 ];
 const typeMap = {
-  'Iterable': jsDocPrefix +
-              'Reference/Iteration_protocols#The_iterable_protocol',
-  'Iterator': jsDocPrefix +
-              'Reference/Iteration_protocols#The_iterator_protocol',
+  'Iterable':
+    `${jsDocPrefix}Reference/Iteration_protocols#The_iterable_protocol`,
+  'Iterator':
+    `${jsDocPrefix}Reference/Iteration_protocols#The_iterator_protocol`,
 
   'Buffer': 'buffer.html#buffer_class_buffer',
 
@@ -57,6 +58,8 @@ const typeMap = {
   'URLSearchParams': 'url.html#url_class_urlsearchparams'
 };
 
+const arrayPart = /(?:\[])+$/;
+
 module.exports = {
   toLink: function(typeInput) {
     const typeLinks = [];
@@ -67,7 +70,14 @@ module.exports = {
       typeText = typeText.trim();
       if (typeText) {
         let typeUrl = null;
-        const primitive = jsPrimitives[typeText];
+
+        // To support type[], type[][] etc., we store the full string
+        // and use the bracket-less version to lookup the type URL
+        const typeTextFull = typeText;
+        typeText = typeText.replace(arrayPart, '');
+
+        const primitive = jsPrimitives[typeText.toLowerCase()];
+
         if (primitive !== undefined) {
           typeUrl = `${jsPrimitiveUrl}#${primitive}_type`;
         } else if (jsGlobalTypes.indexOf(typeText) !== -1) {
@@ -77,10 +87,10 @@ module.exports = {
         }
 
         if (typeUrl) {
-          typeLinks.push('<a href="' + typeUrl + '" class="type">&lt;' +
-            typeText + '&gt;</a>');
+          typeLinks.push(`
+            <a href="${typeUrl}" class="type">&lt;${typeTextFull}&gt;</a>`);
         } else {
-          typeLinks.push('<span class="type">&lt;' + typeText + '&gt;</span>');
+          typeLinks.push(`<span class="type">&lt;${typeTextFull}&gt;</span>`);
         }
       }
     });

@@ -29,8 +29,7 @@ fi
 
 
 # Dependencies bundled in distributions
-addlicense "c-ares" "deps/cares" \
-           "$(sed -e '/^ \*\/$/,$d' -e '/^$/d' -e 's/^[/ ]\* *//' ${rootdir}/deps/cares/src/ares_init.c)"
+addlicense "c-ares" "deps/cares" "$(tail -n +3 ${rootdir}/deps/cares/LICENSE.md)"
 addlicense "HTTP Parser" "deps/http_parser" "$(cat deps/http_parser/LICENSE-MIT)"
 if [ -f "${rootdir}/deps/icu/LICENSE" ]; then
   # ICU 57 and following. Drop the BOM
@@ -80,15 +79,13 @@ addlicense "cpplint.py" "tools/cpplint.py" \
 addlicense "ESLint" "tools/eslint" "$(cat ${rootdir}/tools/eslint/LICENSE)"
 addlicense "gtest" "deps/gtest" "$(cat ${rootdir}/deps/gtest/LICENSE)"
 
-# v8_inspector
-addlicense "v8_inspector" "deps/v8_inspector/third_party/v8_inspector" \
-           "$(cat ${rootdir}/deps/v8_inspector/third_party/v8_inspector/LICENSE)"
-# Build tooling for v8_inspector
-addlicense "jinja2" "deps/v8_inspector/third_party/jinja2" \
-           "$(cat ${rootdir}/deps/v8_inspector/third_party/jinja2/LICENSE)"
-addlicense "markupsafe" "deps/v8_inspector/third_party/markupsafe" \
-           "$(cat ${rootdir}/deps/v8_inspector/third_party/markupsafe/LICENSE)"
+# nghttp2
+addlicense "nghttp2" "deps/nghttp2" "$(cat ${rootdir}/deps/nghttp2/COPYING)"
 
+# remark-cli
+addlicense "remark-cli" "tools/remark-cli" "$(cat ${rootdir}/tools/remark-cli/LICENSE)"
 
+# node-inspect
+addlicense "node-inspect" "deps/node-inspect" "$(cat ${rootdir}/deps/node-inspect/LICENSE)"
 
 mv $tmplicense $licensefile
